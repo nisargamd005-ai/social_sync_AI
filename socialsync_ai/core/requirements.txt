@@ -1,0 +1,11 @@
+django>=5.0
+celery>=5.3
+redis>=5.0
+python-telegram-bot>=21.0
+python-dotenv>=1.0
+
+# Optional — for scheduled tasks (Celery Beat)
+# django-celery-beat>=2.6
+
+# Optional — for Twitter API
+# tweepy>=4.14
