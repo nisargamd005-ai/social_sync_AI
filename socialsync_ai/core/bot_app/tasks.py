@@ -4,7 +4,7 @@ from celery import shared_task
 from telegram import Bot
 
 from .models import Post
-from social_posting.utils import post_to_linkedin, post_to_instagram, post_to_twitter
+from social_posting.utils import post_to_linkedin, post_to_instagram, post_to_twitter, post_to_youtube
 from social_posting.ai_agent import analyze_command, prepare_content
 
 BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "YOUR_TELEGRAM_BOT_TOKEN")
@@ -53,7 +53,7 @@ def publish_post(self, post_id):
     if "linkedin" in platforms:
         try:
             content = prepare_content(base_content, "linkedin")
-            post_to_linkedin(content)
+            post_to_linkedin(content, media_path=post.media_path)
             post.linkedin_status = True
             successes.append("LinkedIn")
             print(f"[LinkedIn] ✅ Posted successfully for post_id={post_id}")
@@ -65,7 +65,7 @@ def publish_post(self, post_id):
     if "instagram" in platforms:
         try:
             content = prepare_content(base_content, "instagram")
-            post_to_instagram(content)
+            post_to_instagram(content, media_path=post.media_path)
             post.instagram_status = True
             successes.append("Instagram")
             print(f"[Instagram] ✅ Posted successfully for post_id={post_id}")
@@ -73,11 +73,23 @@ def publish_post(self, post_id):
             errors.append(f"Instagram: {str(e)}")
             print(f"[Instagram] ❌ Failed for post_id={post_id}: {e}")
 
+    # --- YouTube ---
+    if "youtube" in platforms:
+        try:
+            content = prepare_content(base_content, "youtube")
+            post_to_youtube(content, media_path=post.media_path)
+            post.youtube_status = True
+            successes.append("YouTube")
+            print(f"[YouTube] ✅ Posted successfully for post_id={post_id}")
+        except Exception as e:
+            errors.append(f"YouTube: {str(e)}")
+            print(f"[YouTube] ❌ Failed for post_id={post_id}: {e}")
+
     # --- Twitter / X ---
     if "twitter" in platforms:
         try:
             content = prepare_content(base_content, "twitter")
-            post_to_twitter(content)
+            post_to_twitter(content, media_path=post.media_path)
             post.twitter_status = True
             successes.append("Twitter")
             print(f"[Twitter] ✅ Posted successfully for post_id={post_id}")

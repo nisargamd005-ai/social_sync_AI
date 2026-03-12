@@ -1,14 +1,15 @@
-
 from django.db import models
 
 class Post(models.Model):
 
     content = models.TextField()
+    media_path = models.CharField(max_length=500, null=True, blank=True)
 
     chat_id = models.CharField(max_length=255, null=True, blank=True)
 
     linkedin_status = models.BooleanField(default=False)
     instagram_status = models.BooleanField(default=False)
+    youtube_status = models.BooleanField(default=False)
     twitter_status = models.BooleanField(default=False)
 
     scheduled_time = models.DateTimeField(null=True, blank=True)
